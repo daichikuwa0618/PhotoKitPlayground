@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 
 extension ViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        print(results)
+        picker.dismiss(animated: true)
     }
 }
 

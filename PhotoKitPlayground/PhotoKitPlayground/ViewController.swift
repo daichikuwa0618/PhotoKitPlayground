@@ -50,6 +50,20 @@ class ViewController: UIViewController {
 extension ViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
+
+        guard let firstItemProvider = results.first?.itemProvider else { return }
+
+        if firstItemProvider.canLoadObject(ofClass: UIImage.self) {
+            firstItemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+                guard let self = self else { return }
+
+                DispatchQueue.main.async {
+                    self.imageView.image = image as? UIImage
+                }
+            }
+        } else {
+            print("対応していない画像フォーマットです。")
+        }
     }
 }
 

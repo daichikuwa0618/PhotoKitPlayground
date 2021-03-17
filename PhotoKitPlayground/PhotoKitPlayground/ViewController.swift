@@ -9,9 +9,12 @@ import UIKit
 import PhotosUI
 
 class ViewController: UIViewController {
+    private var imageView: UIImageView = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        setupImageView()
 
         let picker = generatePhotoPicker()
         picker.delegate = self
@@ -27,6 +30,20 @@ class ViewController: UIViewController {
         let picker = PHPickerViewController(configuration: configuration)
 
         return picker
+    }
+
+    private func setupImageView() {
+        view.addSubview(imageView)
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(systemName: "photo.on.rectangle.angled")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
 }
 

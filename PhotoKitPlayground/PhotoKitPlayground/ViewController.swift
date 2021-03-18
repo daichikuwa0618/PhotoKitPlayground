@@ -52,18 +52,34 @@ extension ViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
 
-        guard let firstItemProvider = results.first?.itemProvider else { return }
+        guard let firstResult = results.first else { return }
 
-        if firstItemProvider.canLoadObject(ofClass: UIImage.self) {
-            firstItemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
-                guard let self = self else { return }
+        // 以下、どちらを使っても imageView に選択した画像が反映される。
+        assignImage(from: firstResult.assetIdentifier)
+//        assignImage(from: firstResult.itemProvider)
+    }
 
-                DispatchQueue.main.async {
-                    self.imageView.image = image as? UIImage
-                }
+    /// `assetIdentifier` から UIImage を取得して、 imageView に反映させる
+    private func assignImage(from id: String?) {
+        guard let id = id,
+              let firstObject = PHAsset.fetchAssets(withLocalIdentifiers: [id], options: nil).firstObject else { return }
+
+        PHImageManager().requestImage(for: firstObject,
+                                      targetSize: imageView.frame.size,
+                                      contentMode: .aspectFit,
+                                      options: nil) { [weak self] (image, info) in
+            self?.imageView.image = image
+        }
+    }
+
+    /// `itemProvider` から UIImage を取得して、 imageView に反映させる
+    private func assignImage(from provider: NSItemProvider) {
+        guard provider.canLoadObject(ofClass: UIImage.self) else { return }
+
+        provider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+            DispatchQueue.main.async {
+                self?.imageView.image = image as? UIImage
             }
-        } else {
-            print("対応していない画像フォーマットです。")
         }
     }
 }

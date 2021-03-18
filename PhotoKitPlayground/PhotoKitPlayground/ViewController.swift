@@ -23,7 +23,8 @@ class ViewController: UIViewController {
     }
 
     private func generatePhotoPicker() -> PHPickerViewController {
-        var configuration = PHPickerConfiguration()
+        let photoLibrary: PHPhotoLibrary = .shared()
+        var configuration = PHPickerConfiguration(photoLibrary: photoLibrary)
         configuration.filter = .images
         configuration.selectionLimit = 0
 

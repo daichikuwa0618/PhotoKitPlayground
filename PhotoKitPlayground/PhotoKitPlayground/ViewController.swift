@@ -68,7 +68,9 @@ extension ViewController: PHPickerViewControllerDelegate {
                                       targetSize: imageView.frame.size,
                                       contentMode: .aspectFit,
                                       options: nil) { [weak self] (image, info) in
-            self?.imageView.image = image
+            DispatchQueue.main.async {
+                self?.imageView.image = image
+            }
         }
     }
 

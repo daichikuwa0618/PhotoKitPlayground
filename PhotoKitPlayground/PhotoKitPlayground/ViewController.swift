@@ -16,7 +16,34 @@ class ViewController: UIViewController {
 
         setupImageView()
 
-        showPhotoPicker()
+        requestPhotoLibraryAccess()
+    }
+
+    private func requestPhotoLibraryAccess() {
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { [weak self] status in
+            guard let self = self else { return }
+
+            switch status {
+            case .notDetermined:
+                self.showErrorAlert("ライブラリへのアクセスが選択されていません。")
+
+            case .restricted:
+                self.showErrorAlert("ライブラリへのアクセスが制限されています。")
+
+            case .denied:
+                self.showErrorAlert("ライブラリへのアクセスが許可されていません。")
+
+            case .authorized:
+                self.showPhotoPicker()
+
+            case .limited:
+                self.showPhotoPicker()
+
+            @unknown default:
+                self.showErrorAlert("ライブラリへのアクセスが不明です。")
+                assertionFailure("unknown permission")
+            }
+        }
     }
 
     private func showPhotoPicker() {
@@ -43,6 +70,14 @@ class ViewController: UIViewController {
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+    }
+
+    private func showErrorAlert(_ message: String) {
+        let alert: UIAlertController = UIAlertController(title: "エラー",
+                                                         message: message,
+                                                         preferredStyle: .alert)
+
+        present(alert, animated: true)
     }
 }
 

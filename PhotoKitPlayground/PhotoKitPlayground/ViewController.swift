@@ -16,21 +16,19 @@ class ViewController: UIViewController {
 
         setupImageView()
 
-        let picker = generatePhotoPicker()
-        picker.delegate = self
-
-        present(picker, animated: true)
+        showPhotoPicker()
     }
 
-    private func generatePhotoPicker() -> PHPickerViewController {
+    private func showPhotoPicker() {
         let photoLibrary: PHPhotoLibrary = .shared()
         var configuration = PHPickerConfiguration(photoLibrary: photoLibrary)
         configuration.filter = .images
         configuration.selectionLimit = 0
 
         let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
 
-        return picker
+        present(picker, animated: true)
     }
 
     private func setupImageView() {
